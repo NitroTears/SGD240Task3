@@ -187,12 +187,14 @@ public class DungeonGenerator : MonoBehaviour
 
     private void DrawMap()
     {
+
         foreach (Room room in rooms)
         {
             if (room == null)
             {
                 continue;
             }
+            Debug.Log(room.ToString());
             Vector2 drawPos = room.gridPosition;
             drawPos.x *= 16; // these are the size of the map sprite
             drawPos.y *= 8;
