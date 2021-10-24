@@ -8,6 +8,7 @@ public class MapSpriteSelector : MonoBehaviour
 {
     public Sprite sprU, sprD, sprR, sprL, sprUD, sprRL, sprUR, sprUL, sprDR, sprDL, sprULD, sprRUL, sprDRU, sprLDR, sprUDRL;
     public bool up, down, left, right;
+    public GameObject doorLeft, doorRight, doorTop, doorBottom;
     public RoomType roomType;
     public Color normalColour, enterColour;
     Color mainColour;
@@ -16,12 +17,19 @@ public class MapSpriteSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // doorLeft = GameObject.Find("DoorLeft");
+        // doorRight = GameObject.Find("DoorRight");
+        // doorTop = GameObject.Find("DoorTop");
+        // doorBottom = GameObject.Find("DoorBottom");
+
         sprRenderer = GetComponent<SpriteRenderer>();
         normalColour.a = 1;
         mainColour = normalColour;
         mainColour.a = 1;
-        PickSprite();
-        PickColour();
+
+        SetDoors();
+        //PickSprite();
+        // PickColour();
     }
 
     private void PickColour()
@@ -37,8 +45,32 @@ public class MapSpriteSelector : MonoBehaviour
         sprRenderer.color = mainColour;
     }
 
+
+    void SetDoors() // The replacement for PickSprite for the new room.
+    {
+        if (!up)
+        {
+            doorTop.SetActive(false);
+        }
+        if (!left)
+        {
+            doorLeft.SetActive(false);
+        }
+        if (!down)
+        {
+            doorBottom.SetActive(false);
+        }
+        if (!right)
+        {
+            doorRight.SetActive(false);
+        }
+
+
+    }
+
+    // picks correct sprite based on the four door bools
     void PickSprite()
-    { //picks correct sprite based on the four door bools
+    {
         if (up)
         {
             if (down)
@@ -127,12 +159,5 @@ public class MapSpriteSelector : MonoBehaviour
         }
     }
 
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }
 

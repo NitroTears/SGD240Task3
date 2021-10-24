@@ -196,8 +196,8 @@ public class DungeonGenerator : MonoBehaviour
             }
             Debug.Log(room.ToString());
             Vector2 drawPos = room.gridPosition;
-            drawPos.x *= 16; // these are the size of the map sprite
-            drawPos.y *= 8;
+            drawPos.x *= 1280; // 16 // these are the size of the map sprite.
+            drawPos.y *= 720;  // 8
             MapSpriteSelector mapper = UnityEngine.Object.Instantiate(roomWhiteObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
             mapper.roomType = room.roomType;
             mapper.up = room.hasTopDoor;
@@ -205,5 +205,11 @@ public class DungeonGenerator : MonoBehaviour
             mapper.left = room.hasLeftDoor;
             mapper.right = room.hasRightDoor;
         }
+    }
+
+    public bool DoesRoomExist(Vector2 mapPosition)
+    {
+
+        return true;
     }
 }
