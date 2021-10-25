@@ -17,6 +17,11 @@ public class MapSpriteSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        doorTop.SetActive(false);
+        doorBottom.SetActive(false);
+        doorLeft.SetActive(false);
+        doorRight.SetActive(false);
+
         // doorLeft = GameObject.Find("DoorLeft");
         // doorRight = GameObject.Find("DoorRight");
         // doorTop = GameObject.Find("DoorTop");
@@ -50,19 +55,19 @@ public class MapSpriteSelector : MonoBehaviour
     {
         if (!up)
         {
-            doorTop.SetActive(false);
+            doorTop.SetActive(true);
         }
         if (!left)
         {
-            doorLeft.SetActive(false);
+            doorLeft.SetActive(true);
         }
         if (!down)
         {
-            doorBottom.SetActive(false);
+            doorBottom.SetActive(true);
         }
         if (!right)
         {
-            doorRight.SetActive(false);
+            doorRight.SetActive(true);
         }
 
 

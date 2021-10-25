@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 112073ba3fc62e1469b3fe48d016bafa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSize: {x: 4, y: 5}
-  NumberOfRooms: 45
+  mapSize: {x: 2, y: 3}
+  NumberOfRooms: 15
   roomWhiteObj: {fileID: 5336036232131244337, guid: 6cbf4f0b3a65cb945b05acdbfe37f6d9, type: 3}
 --- !u!4 &7550539
 Transform:
