@@ -72,19 +72,15 @@ public class DungeonGenerator : MonoBehaviour
         {
             try
             {
-                if (room != null)
+                if (furthestRoom != room.gridPosition)
                 {
-                    if (furthestRoom == room.gridPosition)
-                    {
-                        room.roomType = RoomType.Boss;
-                        break;
-                    }
+                    room.roomType = RoomType.Boss;
+                    break;
                 }
-
             }
             catch (Exception e)
             {
-                Debug.Log("Ouch");
+                Debug.Log(e);
             }
             finally
             {
@@ -234,7 +230,7 @@ public class DungeonGenerator : MonoBehaviour
             }
             Debug.Log(room.ToString());
             Vector2 drawPos = room.gridPosition;
-            drawPos.x *= 1280; // 16 // these are the size of the map sprite.
+            drawPos.x *= 1280; // 16 // these are the size of the map sprite / room object.
             drawPos.y *= 720;  // 8
             switch (room.roomType)
             {
@@ -243,13 +239,10 @@ public class DungeonGenerator : MonoBehaviour
                     break;
                 case RoomType.Normal:
                     mapper = UnityEngine.Object.Instantiate(roomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
-
                     break;
                 case RoomType.Boss:
                     mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
                     break;
-                // case RoomType.Item:
-                //     break;
                 default:
                     break;
             }
@@ -275,6 +268,11 @@ public class DungeonGenerator : MonoBehaviour
     public Vector2 AbsVector2(Vector2 vector2)
     {
         return new Vector2(Mathf.Abs(vector2.x), Mathf.Abs(vector2.y));
+    }
 
+    public int RoomDistanceFromCenter(Vector2 roomPos)
+    {
+        Vector2 absRoomPos = (AbsVector2(roomPos));
+        return (int)absRoomPos.x + (int)absRoomPos.y;
     }
 }

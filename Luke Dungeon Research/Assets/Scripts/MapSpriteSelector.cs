@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class MapSpriteSelector : MonoBehaviour
 {
-    public Sprite sprU, sprD, sprR, sprL, sprUD, sprRL, sprUR, sprUL, sprDR, sprDL, sprULD, sprRUL, sprDRU, sprLDR, sprUDRL;
+    // public Sprite sprU, sprD, sprR, sprL, sprUD, sprRL, sprUR, sprUL, sprDR, sprDL, sprULD, sprRUL, sprDRU, sprLDR, sprUDRL;
     public bool up, down, left, right;
     public GameObject doorLeft, doorRight, doorTop, doorBottom;
     public RoomType roomType;
-    public Color normalColour, enterColour;
-    Color mainColour;
-    SpriteRenderer sprRenderer;
+    // public Color normalColour, enterColour;
+    // Color mainColour;
+    // SpriteRenderer sprRenderer;
 
     // Start is called before the first frame update
     void Start()
@@ -27,28 +27,28 @@ public class MapSpriteSelector : MonoBehaviour
         // doorTop = GameObject.Find("DoorTop");
         // doorBottom = GameObject.Find("DoorBottom");
 
-        sprRenderer = GetComponent<SpriteRenderer>();
-        normalColour.a = 1;
-        mainColour = normalColour;
-        mainColour.a = 1;
+        // sprRenderer = GetComponent<SpriteRenderer>();
+        // normalColour.a = 1;
+        // mainColour = normalColour;
+        // mainColour.a = 1;
 
         SetDoors();
         // PickSprite(); // These are the old methods from a tutorial, they used sprites and colours instead of door objects.
         // PickColour();
     }
 
-    private void PickColour()
-    {
-        if (roomType == RoomType.Normal)
-        {
-            mainColour = normalColour;
-        }
-        else if (roomType == RoomType.Start)
-        {
-            mainColour = enterColour;
-        }
-        sprRenderer.color = mainColour;
-    }
+    // private void PickColour()
+    // {
+    //     if (roomType == RoomType.Normal)
+    //     {
+    //         mainColour = normalColour;
+    //     }
+    //     else if (roomType == RoomType.Start)
+    //     {
+    //         mainColour = enterColour;
+    //     }
+    //     sprRenderer.color = mainColour;
+    // }
 
 
     void SetDoors() // The replacement for PickSprite for the new room.
@@ -74,95 +74,95 @@ public class MapSpriteSelector : MonoBehaviour
     }
 
     // picks correct sprite based on the four door bools
-    void PickSprite()
-    {
-        if (up)
-        {
-            if (down)
-            {
-                if (right)
-                {
-                    if (left)
-                    {
-                        sprRenderer.sprite = sprUDRL;
-                    }
-                    else
-                    {
-                        sprRenderer.sprite = sprDRU;
-                    }
-                }
-                else if (left)
-                {
-                    sprRenderer.sprite = sprULD;
-                }
-                else
-                {
-                    sprRenderer.sprite = sprUD;
-                }
-            }
-            else
-            {
-                if (right)
-                {
-                    if (left)
-                    {
-                        sprRenderer.sprite = sprRUL;
-                    }
-                    else
-                    {
-                        sprRenderer.sprite = sprUR;
-                    }
-                }
-                else if (left)
-                {
-                    sprRenderer.sprite = sprUL;
-                }
-                else
-                {
-                    sprRenderer.sprite = sprU;
-                }
-            }
-            return;
-        }
-        if (down)
-        {
-            if (right)
-            {
-                if (left)
-                {
-                    sprRenderer.sprite = sprLDR;
-                }
-                else
-                {
-                    sprRenderer.sprite = sprDR;
-                }
-            }
-            else if (left)
-            {
-                sprRenderer.sprite = sprDL;
-            }
-            else
-            {
-                sprRenderer.sprite = sprD;
-            }
-            return;
-        }
-        if (right)
-        {
-            if (left)
-            {
-                sprRenderer.sprite = sprRL;
-            }
-            else
-            {
-                sprRenderer.sprite = sprR;
-            }
-        }
-        else
-        {
-            sprRenderer.sprite = sprL;
-        }
-    }
+    // void PickSprite()
+    // {
+    //     if (up)
+    //     {
+    //         if (down)
+    //         {
+    //             if (right)
+    //             {
+    //                 if (left)
+    //                 {
+    //                     sprRenderer.sprite = sprUDRL;
+    //                 }
+    //                 else
+    //                 {
+    //                     sprRenderer.sprite = sprDRU;
+    //                 }
+    //             }
+    //             else if (left)
+    //             {
+    //                 sprRenderer.sprite = sprULD;
+    //             }
+    //             else
+    //             {
+    //                 sprRenderer.sprite = sprUD;
+    //             }
+    //         }
+    //         else
+    //         {
+    //             if (right)
+    //             {
+    //                 if (left)
+    //                 {
+    //                     sprRenderer.sprite = sprRUL;
+    //                 }
+    //                 else
+    //                 {
+    //                     sprRenderer.sprite = sprUR;
+    //                 }
+    //             }
+    //             else if (left)
+    //             {
+    //                 sprRenderer.sprite = sprUL;
+    //             }
+    //             else
+    //             {
+    //                 sprRenderer.sprite = sprU;
+    //             }
+    //         }
+    //         return;
+    //     }
+    //     if (down)
+    //     {
+    //         if (right)
+    //         {
+    //             if (left)
+    //             {
+    //                 sprRenderer.sprite = sprLDR;
+    //             }
+    //             else
+    //             {
+    //                 sprRenderer.sprite = sprDR;
+    //             }
+    //         }
+    //         else if (left)
+    //         {
+    //             sprRenderer.sprite = sprDL;
+    //         }
+    //         else
+    //         {
+    //             sprRenderer.sprite = sprD;
+    //         }
+    //         return;
+    //     }
+    //     if (right)
+    //     {
+    //         if (left)
+    //         {
+    //             sprRenderer.sprite = sprRL;
+    //         }
+    //         else
+    //         {
+    //             sprRenderer.sprite = sprR;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         sprRenderer.sprite = sprL;
+    //     }
+    // }
 
 }
 
