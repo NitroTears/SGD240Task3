@@ -33,7 +33,7 @@ public class MapSpriteSelector : MonoBehaviour
         mainColour.a = 1;
 
         SetDoors();
-        //PickSprite();
+        // PickSprite(); // These are the old methods from a tutorial, they used sprites and colours instead of door objects.
         // PickColour();
     }
 

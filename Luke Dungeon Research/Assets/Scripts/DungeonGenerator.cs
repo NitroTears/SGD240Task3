@@ -10,7 +10,11 @@ public class DungeonGenerator : MonoBehaviour
     List<Vector2> filledMapPositions = new List<Vector2>();
     int mapSizeX, mapSizeY;
     public int NumberOfRooms;
-    public GameObject roomWhiteObj;
+    private Vector2 furthestRoom;
+    public GameObject roomObj;
+    public GameObject startRoomObj;
+    public GameObject bossRoomObj;
+
 
     void Start()
     {
@@ -27,6 +31,7 @@ public class DungeonGenerator : MonoBehaviour
 
     void CreateRooms()
     {
+        furthestRoom = new Vector2(0, 0); //holds the furthest room away, to dictate the boss room.
         rooms = new Room[mapSizeX * 2, mapSizeY * 2]; // generate the map bounds (mapSizeX/Y is the center of the room.)
         rooms[mapSizeX, mapSizeY] = new Room(Vector2.zero, RoomType.Start); // put starting room in the centre
         filledMapPositions.Insert(0, Vector2.zero); // add this starting room to the list of filled positions
@@ -52,8 +57,40 @@ public class DungeonGenerator : MonoBehaviour
                     Debug.Log("Error: could not create with fewer neighbours than : " + NumberOfNeighbours(checkPos, filledMapPositions));
                 }
             }
+
             rooms[(int)checkPos.x + mapSizeX, (int)checkPos.y + mapSizeY] = new Room(checkPos, RoomType.Normal);
+            if (AbsVector2(checkPos).x + AbsVector2(checkPos).y > furthestRoom.x + furthestRoom.y)
+            // The furthest room from the start room will be used as the boss room. Absolute values are used to measure distance from (0, 0).
+            {
+                furthestRoom = AbsVector2(checkPos);
+            }
             filledMapPositions.Insert(0, checkPos);
+        }
+
+        // rooms.GetValue()
+        foreach (var room in rooms)
+        {
+            try
+            {
+                if (room != null)
+                {
+                    if (furthestRoom == room.gridPosition)
+                    {
+                        room.roomType = RoomType.Boss;
+                        break;
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Ouch");
+            }
+            finally
+            {
+
+            }
+
         }
     }
 
@@ -79,7 +116,7 @@ public class DungeonGenerator : MonoBehaviour
         return noOfNeighbours;
     }
 
-    Vector2 SelectiveNewPosition() // Gets a valid position, one that is adjacent to an existing room.
+    Vector2 SelectiveNewPosition() // Gets a valid position, one that only only has one neighbour
     {
         int index = 0, inc = 0;
         int x = 0, y = 0;
@@ -187,7 +224,8 @@ public class DungeonGenerator : MonoBehaviour
 
     private void DrawMap()
     {
-
+        MapSpriteSelector mapper = null;
+        // var firstRoom = true;
         foreach (Room room in rooms)
         {
             if (room == null)
@@ -198,7 +236,27 @@ public class DungeonGenerator : MonoBehaviour
             Vector2 drawPos = room.gridPosition;
             drawPos.x *= 1280; // 16 // these are the size of the map sprite.
             drawPos.y *= 720;  // 8
-            MapSpriteSelector mapper = UnityEngine.Object.Instantiate(roomWhiteObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+            switch (room.roomType)
+            {
+                case RoomType.Start:
+                    mapper = UnityEngine.Object.Instantiate(startRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+                    break;
+                case RoomType.Normal:
+                    mapper = UnityEngine.Object.Instantiate(roomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+
+                    break;
+                case RoomType.Boss:
+                    mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+                    break;
+                // case RoomType.Item:
+                //     break;
+                default:
+                    break;
+            }
+            // if (room.gridPosition == furthestRoom)
+            // {
+            //    mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+            // }
             mapper.roomType = room.roomType;
             mapper.up = room.hasTopDoor;
             mapper.down = room.hasBottomDoor;
@@ -211,5 +269,12 @@ public class DungeonGenerator : MonoBehaviour
     {
 
         return true;
+    }
+
+    // Vector2 didn't have a native absolute value function, so I made one.
+    public Vector2 AbsVector2(Vector2 vector2)
+    {
+        return new Vector2(Mathf.Abs(vector2.x), Mathf.Abs(vector2.y));
+
     }
 }

@@ -2239,7 +2239,7 @@ MonoBehaviour:
   doorRight: {fileID: 2690484707585135030}
   doorTop: {fileID: 6316161852411837692}
   doorBottom: {fileID: 4443062981450385637}
-  roomType: 0
+  roomType: 1
   normalColour: {r: 0.735849, g: 0.2179779, b: 0.2179779, a: 0}
   enterColour: {r: 0.13463865, g: 0.5849056, b: 0.14977679, a: 0}
 --- !u!1 &5503176155763788659
