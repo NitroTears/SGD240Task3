@@ -475,6 +475,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8825838831143417033, guid: 6cbf4f0b3a65cb945b05acdbfe37f6d9, type: 3}
+      propertyPath: roomType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9094115981527170157, guid: 6cbf4f0b3a65cb945b05acdbfe37f6d9, type: 3}
       propertyPath: m_Color.b
       value: 1

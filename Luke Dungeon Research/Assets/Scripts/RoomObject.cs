@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class is now unused, Most of this functionality was merged with the Room class.
+/// remnants of the tutorial I used can also be found here.
+/// </summary>
 
-public class MapSpriteSelector : MonoBehaviour
+public class RoomObject : MonoBehaviour
 {
     // public Sprite sprU, sprD, sprR, sprL, sprUD, sprRL, sprUR, sprUL, sprDR, sprDL, sprULD, sprRUL, sprDRU, sprLDR, sprUDRL;
     public bool up, down, left, right;

@@ -228,7 +228,7 @@ public class DungeonGenerator : MonoBehaviour
 
     private void DrawMap()
     {
-        MapSpriteSelector mapper = null;
+        RoomObject mapper = null;
         // var firstRoom = true;
         foreach (Room room in rooms)
         {
@@ -243,13 +243,13 @@ public class DungeonGenerator : MonoBehaviour
             switch (room.roomType)
             {
                 case RoomType.Start:
-                    mapper = UnityEngine.Object.Instantiate(startRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+                    mapper = UnityEngine.Object.Instantiate(startRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
                     break;
                 case RoomType.Normal:
-                    mapper = UnityEngine.Object.Instantiate(roomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+                    mapper = UnityEngine.Object.Instantiate(roomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
                     break;
                 case RoomType.Boss:
-                    mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
+                    mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
                     break;
                 default:
                     break;
