@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 112073ba3fc62e1469b3fe48d016bafa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSize: {x: 3, y: 4}
-  NumberOfRooms: 15
+  mapSize: {x: 6, y: 7}
+  NumberOfRooms: 25
   roomObj: {fileID: 5336036232131244337, guid: 6cbf4f0b3a65cb945b05acdbfe37f6d9, type: 3}
   startRoomObj: {fileID: 5029290815183856284, guid: b68095eda1d331345bb7268bacf97ded, type: 3}
   bossRoomObj: {fileID: 5029290815183856284, guid: 65f656d54661b8640afc230d22c54ec6, type: 3}

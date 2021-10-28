@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -59,35 +60,42 @@ public class DungeonGenerator : MonoBehaviour
             }
 
             rooms[(int)checkPos.x + mapSizeX, (int)checkPos.y + mapSizeY] = new Room(checkPos, RoomType.Normal);
-            if (AbsVector2(checkPos).x + AbsVector2(checkPos).y > furthestRoom.x + furthestRoom.y)
-            // The furthest room from the start room will be used as the boss room. Absolute values are used to measure distance from (0, 0).
-            {
-                furthestRoom = AbsVector2(checkPos);
-            }
+
+            // if (AbsVector2(checkPos).x + AbsVector2(checkPos).y >= furthestRoom.x + furthestRoom.y)
+            // // The furthest room from the start room will be used as the boss room. Absolute values are used to measure distance from (0, 0).
+            // {
+            //     furthestRoom = AbsVector2(checkPos);
+            // }
             filledMapPositions.Insert(0, checkPos);
         }
 
-        // rooms.GetValue()
-        foreach (var room in rooms)
+        var bossRoomLocation = CalculateBossRoomLocation(filledMapPositions);
+        if (bossRoomLocation != null)
         {
-            try
+            foreach (var room in rooms)
             {
-                if (furthestRoom != room.gridPosition)
+                try
                 {
-                    room.roomType = RoomType.Boss;
-                    break;
+                    if (room.gridPosition == bossRoomLocation)
+                    {
+                        room.roomType = RoomType.Boss;
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
+                finally
+                {
+
                 }
             }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-            }
-            finally
-            {
-
-            }
-
         }
+
+
+        // rooms.GetValue()
+
     }
 
     private int NumberOfNeighbours(Vector2 checkPos, List<Vector2> filledMapPositions)
@@ -260,8 +268,7 @@ public class DungeonGenerator : MonoBehaviour
 
     public bool DoesRoomExist(Vector2 mapPosition)
     {
-
-        return true;
+        return filledMapPositions.Contains(mapPosition);
     }
 
     // Vector2 didn't have a native absolute value function, so I made one.
@@ -274,5 +281,87 @@ public class DungeonGenerator : MonoBehaviour
     {
         Vector2 absRoomPos = (AbsVector2(roomPos));
         return (int)absRoomPos.x + (int)absRoomPos.y;
+    }
+
+    // This method uses the Breadth First Search algorithm to calculate the furthest room from the start.
+    // This took days to get working and I'm quite proud of it.
+    public Vector2 CalculateBossRoomLocation(List<Vector2> filledMapPositions)
+    {
+        var startPos = Vector2.zero;
+        var positionsToCheck = new List<Vector2>();
+        var checkedRooms = new List<Vector2>();
+        checkedRooms.Add(startPos);
+        var nextNeighbours = GetRoomNeighbours(startPos, filledMapPositions);
+        // for each of the neighbours found add them to the checked rooms list
+        // and prepare their own neighbours for checking next round.
+        while (nextNeighbours.Count > 0)
+        {
+            //clear next up list and prepare to check them
+            positionsToCheck.AddRange(nextNeighbours);
+            nextNeighbours.Clear();
+            // Add each item in toCheck list to the checked list.
+            foreach (var item in positionsToCheck)
+            {
+                // If a room has not been checked, check it, and grab its neighbours.
+                if (!checkedRooms.Contains(item))
+                {
+                    checkedRooms.Add(item);
+                    var thisRoomsNeighbours = GetRoomNeighbours(item, filledMapPositions);
+                    // add this rooms neighbours to nextneighbours for checking next round.
+                    foreach (var neighbour in thisRoomsNeighbours)
+                    {
+                        if (!nextNeighbours.Contains(neighbour))
+                        {
+                            nextNeighbours.Add(neighbour);
+                        }
+                    }
+                }
+            }
+            //clear this rounds list to be used next round
+            positionsToCheck.Clear();
+        }
+        // the furthest room away will always be the last position in the list (or tied for it).
+        var bossRoomPosition = checkedRooms[checkedRooms.Count - 1];
+
+        return bossRoomPosition;
+    }
+
+    public List<Vector2> GetRoomNeighbours(Vector2 roomPos, List<Vector2> filledMapPositions)
+    {
+        var neighbours = new List<Vector2>();
+        if (DoesRoomExist(roomPos + Vector2.up))
+        {
+            neighbours.Add(roomPos + Vector2.up);
+        }
+        if (DoesRoomExist(roomPos + Vector2.right))
+        {
+            neighbours.Add(roomPos + Vector2.right);
+        }
+        if (DoesRoomExist(roomPos + Vector2.down))
+        {
+            neighbours.Add(roomPos + Vector2.down);
+        }
+        if (DoesRoomExist(roomPos + Vector2.left))
+        {
+            neighbours.Add(roomPos + Vector2.left);
+        }
+
+        return neighbours;
+    }
+
+    //Returns a room found by coordinates, if nothing found return null;
+    public Room GetRoom(Vector2 position)
+    {
+        if (DoesRoomExist(position))
+        {
+            foreach (Room room in rooms)
+            {
+                if (room.gridPosition == position)
+                {
+                    return room;
+                }
+            }
+        }
+        return null;
     }
 }
