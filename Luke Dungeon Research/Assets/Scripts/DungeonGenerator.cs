@@ -7,14 +7,13 @@ using System.Linq;
 public class DungeonGenerator : MonoBehaviour
 {
     public Vector2 mapSize;
-    Room[,] rooms;
+    RoomData[,] rooms;
     List<Vector2> filledMapPositions = new List<Vector2>();
     int mapSizeX, mapSizeY;
     public int NumberOfRooms;
-    private Vector2 furthestRoom;
-    public GameObject roomObj;
-    public GameObject startRoomObj;
-    public GameObject bossRoomObj;
+    // private Vector2 furthestRoom;
+    public GameObject roomObj, startRoomObj, bossRoomObj, itemRoomObj;
+    // public bool firstRoom
 
 
     void Start()
@@ -32,20 +31,19 @@ public class DungeonGenerator : MonoBehaviour
 
     void CreateRooms()
     {
-        furthestRoom = new Vector2(0, 0); //holds the furthest room away, to dictate the boss room.
-        rooms = new Room[mapSizeX * 2, mapSizeY * 2]; // generate the map bounds (mapSizeX/Y is the center of the room.)
-        rooms[mapSizeX, mapSizeY] = new Room(Vector2.zero, RoomType.Start); // put starting room in the centre
+        // furthestRoom = new Vector2(0, 0); //holds the furthest room away, to dictate the boss room.
+        rooms = new RoomData[mapSizeX * 2, mapSizeY * 2]; // generate the map bounds (mapSizeX/Y is the center of the room.)
+        rooms[mapSizeX, mapSizeY] = new RoomData(Vector2.zero, RoomType.Start); // put starting room in the centre
         filledMapPositions.Insert(0, Vector2.zero); // add this starting room to the list of filled positions
         Vector2 checkPos = Vector2.zero;
 
         // generate room positions
-        float randomCompare = 0.2f, randomCompareStart = 0.2f, randomCompareEnd = 0.01f; // 'magic numbers'
+        float randomCompareStart = 0.2f, randomCompareEnd = 0.01f; // 'magic numbers'
         for (int i = 0; i < NumberOfRooms - 1; i++) // minus 1 to account for the starting room
         {
             float randomPerc = ((float)i) / (((float)NumberOfRooms - 1));
-            randomCompare = Mathf.Lerp(randomCompareStart, randomCompareEnd, randomPerc);
             checkPos = NewPosition(); // get valid position for spawn
-            if (NumberOfNeighbours(checkPos, filledMapPositions) > 1 && UnityEngine.Random.value > randomCompare) // branch out the rooms
+            if (NumberOfNeighbours(checkPos, filledMapPositions) > 1 && UnityEngine.Random.value > Mathf.Lerp(randomCompareStart, randomCompareEnd, randomPerc)) // branch out the rooms
             {
                 int iterations = 0;
                 do
@@ -58,8 +56,7 @@ public class DungeonGenerator : MonoBehaviour
                     Debug.Log("Error: could not create with fewer neighbours than : " + NumberOfNeighbours(checkPos, filledMapPositions));
                 }
             }
-
-            rooms[(int)checkPos.x + mapSizeX, (int)checkPos.y + mapSizeY] = new Room(checkPos, RoomType.Normal);
+            rooms[(int)checkPos.x + mapSizeX, (int)checkPos.y + mapSizeY] = new RoomData(checkPos, RoomType.Normal);
 
             // if (AbsVector2(checkPos).x + AbsVector2(checkPos).y >= furthestRoom.x + furthestRoom.y)
             // // The furthest room from the start room will be used as the boss room. Absolute values are used to measure distance from (0, 0).
@@ -68,34 +65,32 @@ public class DungeonGenerator : MonoBehaviour
             // }
             filledMapPositions.Insert(0, checkPos);
         }
-
-        var bossRoomLocation = CalculateBossRoomLocation(filledMapPositions);
-        if (bossRoomLocation != null)
+        Vector2 bossRoomLocation = CalculateBossRoomLocation(filledMapPositions);
+        Vector2 itemRoomLocation = Vector2.zero;
+        do
         {
-            foreach (var room in rooms)
-            {
-                try
-                {
-                    if (room.gridPosition == bossRoomLocation)
-                    {
-                        room.roomType = RoomType.Boss;
-                        break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e);
-                }
-                finally
-                {
+            itemRoomLocation = filledMapPositions[UnityEngine.Random.Range(1, filledMapPositions.Count - 1)];
+        } while (itemRoomLocation == bossRoomLocation || itemRoomLocation == Vector2.zero);
 
+        foreach (var room in rooms)
+        {
+            try
+            {
+                if (bossRoomLocation != null && room.gridPosition == bossRoomLocation)
+                {
+                    room.roomType = RoomType.Boss;
                 }
+                else if (room.gridPosition == itemRoomLocation)
+                {
+                    room.roomType = RoomType.Item;
+                }
+            } // If a space in the map has no room, it will throw a null error. This is OK.
+            catch (Exception e)
+            {
+                Debug.Log(e);
             }
         }
-
-
         // rooms.GetValue()
-
     }
 
     private int NumberOfNeighbours(Vector2 checkPos, List<Vector2> filledMapPositions)
@@ -139,25 +134,11 @@ public class DungeonGenerator : MonoBehaviour
             bool positive = (UnityEngine.Random.value < 0.5f);
             if (upAndDown)
             {
-                if (positive)
-                {
-                    y += 1;
-                }
-                else
-                {
-                    y -= 1;
-                }
+                y = positive ? y + 1 : y - 1;
             }
             else
             {
-                if (positive)
-                {
-                    x += 1;
-                }
-                else
-                {
-                    x -= 1;
-                }
+                x = positive ? x + 1 : x - 1;
             }
             checkingPos = new Vector2(x, y); // get the new position.
         } while (filledMapPositions.Contains(checkingPos) || x >= mapSizeX || x < -mapSizeX || y >= mapSizeY || y < -mapSizeY);
@@ -182,25 +163,11 @@ public class DungeonGenerator : MonoBehaviour
             bool positive = (UnityEngine.Random.value < 0.5f);
             if (upAndDown)
             {
-                if (positive)
-                {
-                    y += 1;
-                }
-                else
-                {
-                    y -= 1;
-                }
+                y = positive ? y + 1 : y - 1;
             }
             else
             {
-                if (positive)
-                {
-                    x += 1;
-                }
-                else
-                {
-                    x -= 1;
-                }
+                x = positive ? x + 1 : x - 1;
             }
             checkingPos = new Vector2(x, y); // get the new position.
         } while (filledMapPositions.Contains(checkingPos) || x >= mapSizeX || x < -mapSizeX || y >= mapSizeY || y < -mapSizeY);
@@ -228,9 +195,9 @@ public class DungeonGenerator : MonoBehaviour
 
     private void DrawMap()
     {
-        RoomObject mapper = null;
+        RoomObject drawnRoom = null;
         // var firstRoom = true;
-        foreach (Room room in rooms)
+        foreach (RoomData room in rooms)
         {
             if (room == null)
             {
@@ -243,13 +210,16 @@ public class DungeonGenerator : MonoBehaviour
             switch (room.roomType)
             {
                 case RoomType.Start:
-                    mapper = UnityEngine.Object.Instantiate(startRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
+                    drawnRoom = UnityEngine.Object.Instantiate(startRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
                     break;
                 case RoomType.Normal:
-                    mapper = UnityEngine.Object.Instantiate(roomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
+                    drawnRoom = UnityEngine.Object.Instantiate(roomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
                     break;
                 case RoomType.Boss:
-                    mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
+                    drawnRoom = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
+                    break;
+                case RoomType.Item:
+                    drawnRoom = UnityEngine.Object.Instantiate(itemRoomObj, drawPos, Quaternion.identity).GetComponent<RoomObject>();
                     break;
                 default:
                     break;
@@ -258,11 +228,11 @@ public class DungeonGenerator : MonoBehaviour
             // {
             //    mapper = UnityEngine.Object.Instantiate(bossRoomObj, drawPos, Quaternion.identity).GetComponent<MapSpriteSelector>();
             // }
-            mapper.roomType = room.roomType;
-            mapper.up = room.hasTopDoor;
-            mapper.down = room.hasBottomDoor;
-            mapper.left = room.hasLeftDoor;
-            mapper.right = room.hasRightDoor;
+            drawnRoom.roomType = room.roomType;
+            drawnRoom.up = room.hasTopDoor;
+            drawnRoom.down = room.hasBottomDoor;
+            drawnRoom.left = room.hasLeftDoor;
+            drawnRoom.right = room.hasRightDoor;
         }
     }
 
@@ -276,7 +246,7 @@ public class DungeonGenerator : MonoBehaviour
     {
         return new Vector2(Mathf.Abs(vector2.x), Mathf.Abs(vector2.y));
     }
-
+    // This function was originally used to determin the bossroom, but the approach didn't work.
     public int RoomDistanceFromCenter(Vector2 roomPos)
     {
         Vector2 absRoomPos = (AbsVector2(roomPos));
@@ -350,11 +320,11 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     //Returns a room found by coordinates, if nothing found return null;
-    public Room GetRoom(Vector2 position)
+    public RoomData GetRoom(Vector2 position)
     {
         if (DoesRoomExist(position))
         {
-            foreach (Room room in rooms)
+            foreach (RoomData room in rooms)
             {
                 if (room.gridPosition == position)
                 {
