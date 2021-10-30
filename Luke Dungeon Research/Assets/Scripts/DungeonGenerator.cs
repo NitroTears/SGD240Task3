@@ -130,9 +130,9 @@ public class DungeonGenerator : MonoBehaviour
             } while (NumberOfNeighbours(filledMapPositions[index], filledMapPositions) > 1 && inc < 100);
             x = (int)filledMapPositions[index].x;
             y = (int)filledMapPositions[index].y;
-            bool upAndDown = (UnityEngine.Random.value < 0.5f);
+            bool yAxis = (UnityEngine.Random.value < 0.5f);
             bool positive = (UnityEngine.Random.value < 0.5f);
-            if (upAndDown)
+            if (yAxis)
             {
                 y = positive ? y + 1 : y - 1;
             }
@@ -159,9 +159,9 @@ public class DungeonGenerator : MonoBehaviour
             int index = Mathf.RoundToInt(UnityEngine.Random.value * (filledMapPositions.Count - 1)); // Get a random existing room to offset from.
             x = (int)filledMapPositions[index].x;
             y = (int)filledMapPositions[index].y;
-            bool upAndDown = (UnityEngine.Random.value < 0.5f);
+            bool yAxis = (UnityEngine.Random.value < 0.5f);
             bool positive = (UnityEngine.Random.value < 0.5f);
-            if (upAndDown)
+            if (yAxis)
             {
                 y = positive ? y + 1 : y - 1;
             }
